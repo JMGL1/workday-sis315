@@ -169,23 +169,68 @@ class Database
                     ('empleado', '$pwdEmpleado', 'empleado')
                 ");
 
-                // Seed some initial data
-                $pdo->exec("INSERT INTO empleados (nombre, departamento, cargo, salario_base) VALUES 
-                    ('Juan Perez', 'TI', 'Desarrollador', 15000),
-                    ('Maria Gomez', 'Finanzas', 'Contadora', 12000)
+            $stmt = $pdo->query("SELECT COUNT(*) FROM empleados");
+            if ($stmt->fetchColumn() < 10) {
+                // Massive Seeding if DB is mostly empty
+                $pdo->exec("INSERT INTO empleados (nombre, departamento, cargo, salario_base, estado) VALUES 
+                    ('Juan Perez', 'TI', 'Desarrollador Senior', 15000, 'Activo'),
+                    ('Maria Gomez', 'Finanzas', 'Contadora', 12000, 'Activo'),
+                    ('Carlos Ruiz', 'Ventas', 'Ejecutivo de Ventas', 9000, 'Activo'),
+                    ('Ana Martinez', 'Recursos Humanos', 'Especialista RRHH', 10500, 'Activo'),
+                    ('Luis Torres', 'TI', 'Soporte Técnico', 7000, 'Activo'),
+                    ('Elena Suarez', 'Marketing', 'Diseñadora Gráfica', 9500, 'Activo'),
+                    ('Roberto Gil', 'Operaciones', 'Gerente de Logística', 18000, 'Activo'),
+                    ('Sofía Vargas', 'Finanzas', 'Analista Financiero', 11000, 'Activo')
                 ");
-                $pdo->exec("INSERT INTO transacciones (fecha, concepto, categoria, tipo, monto) VALUES 
-                    ('2026-05-01', 'Capital Inicial', 'Inversión', 'ingreso', 500000)
+
+                $pdo->exec("INSERT INTO transacciones (fecha, concepto, categoria, tipo, monto, estado) VALUES 
+                    ('2026-05-01', 'Capital Inicial', 'Inversión', 'ingreso', 500000, 'Completado'),
+                    ('2026-05-05', 'Pago Alquiler Oficinas', 'Infraestructura', 'egreso', 15000, 'Completado'),
+                    ('2026-05-10', 'Venta Licencias Enterprise', 'Ventas', 'ingreso', 85000, 'Completado'),
+                    ('2026-05-12', 'Servicios Cloud AWS', 'Tecnología', 'egreso', 4500, 'Completado'),
+                    ('2026-05-15', 'Campaña Ads Google', 'Marketing', 'egreso', 7200, 'Completado')
                 ");
-                $pdo->exec("INSERT INTO inventario (articulo, stock, minimo) VALUES 
-                    ('Laptop Dell XPS', 5, 3),
-                    ('Monitor 27', 2, 5)
+
+                $pdo->exec("INSERT INTO inventario (articulo, stock, minimo, estado) VALUES 
+                    ('Laptop Dell XPS 15', 25, 5, 'Óptimo'),
+                    ('Monitor LG 27\"', 12, 15, 'Bajo'),
+                    ('Teclado Mecánico Keychron', 8, 10, 'Bajo'),
+                    ('Sillas Ergonómicas Herman Miller', 45, 10, 'Óptimo'),
+                    ('Servidor Rackmount HP', 2, 2, 'Crítico')
                 ");
+
                 $pdo->exec("INSERT INTO talento_objetivos (titulo, departamento, progreso, estado) VALUES 
-                    ('Lanzar Producto', 'TI', 75, 'En Progreso')
+                    ('Lanzar Producto v2.0', 'TI', 75, 'En Progreso'),
+                    ('Reducir Costos Operativos un 15%', 'Finanzas', 40, 'En Progreso'),
+                    ('Campaña Rebranding Q3', 'Marketing', 10, 'Iniciado'),
+                    ('Capacitación Seguridad Industrial', 'Operaciones', 100, 'Completado')
                 ");
+
                 $pdo->exec("INSERT INTO candidatos (nombre, puesto, estado) VALUES 
-                    ('Carlos Ruiz', 'Backend Dev', 'entrevista')
+                    ('Fernando López', 'Backend Developer', 'entrevista'),
+                    ('Carla Mendoza', 'Especialista Marketing', 'postulado'),
+                    ('Diego Castro', 'Contador Junior', 'oferta'),
+                    ('Lucía Beltrán', 'UX/UI Designer', 'rechazado')
+                ");
+
+                $pdo->exec("INSERT INTO presupuestos (trimestre, monto_asignado, gasto_real) VALUES 
+                    ('Q1', 150000.00, 145200.00),
+                    ('Q2', 175000.00, 180000.00),
+                    ('Q3', 200000.00, 85000.00),
+                    ('Q4', 250000.00, 0.00)
+                ");
+
+                $pdo->exec("INSERT INTO gastos (empleado_id, fecha, descripcion, monto, estado) VALUES 
+                    (3, '2026-05-18', 'Viaje a Conferencia de Ventas', 3500.00, 'Aprobado'),
+                    (1, '2026-05-20', 'Licencia IDE JetBrains', 1200.00, 'Pendiente'),
+                    (6, '2026-05-21', 'Material POP para Evento', 450.50, 'Aprobado')
+                ");
+
+                $pdo->exec("INSERT INTO asistencia (empleado_id, tipo, fecha, hora) VALUES 
+                    (1, 'entrada', '2026-05-24', '08:00:00'),
+                    (2, 'entrada', '2026-05-24', '08:15:00'),
+                    (3, 'entrada', '2026-05-24', '09:00:00'),
+                    (1, 'salida', '2026-05-24', '17:05:00')
                 ");
             }
     }

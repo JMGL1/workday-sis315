@@ -32,6 +32,10 @@ require_once __DIR__ . '/../src/Controllers/FinanzasController.php';
 require_once __DIR__ . '/../src/Controllers/AsistenciaController.php';
 require_once __DIR__ . '/../src/Controllers/NominaController.php';
 require_once __DIR__ . '/../src/Controllers/GastosController.php';
+require_once __DIR__ . '/../src/Controllers/ReclutamientoController.php';
+require_once __DIR__ . '/../src/Controllers/TalentoController.php';
+require_once __DIR__ . '/../src/Controllers/InventarioController.php';
+require_once __DIR__ . '/../src/Controllers/PlanificacionController.php';
 
 use App\Core\Router;
 
@@ -58,6 +62,19 @@ $router->post('/api/payroll/approve', [App\Controllers\NominaController::class, 
 // Rutas Gastos
 $router->get('/api/gastos/solicitudes', [App\Controllers\GastosController::class, 'getGastos']);
 $router->post('/api/gastos/solicitudes', [App\Controllers\GastosController::class, 'createGasto']);
+
+// Rutas Reclutamiento
+$router->get('/api/reclutamiento/candidatos', [App\Controllers\ReclutamientoController::class, 'getCandidatos']);
+$router->post('/api/reclutamiento/candidatos', [App\Controllers\ReclutamientoController::class, 'createCandidato']);
+
+// Rutas Talento
+$router->get('/api/talento/objetivos', [App\Controllers\TalentoController::class, 'getObjetivos']);
+
+// Rutas Inventario
+$router->get('/api/inventario/articulos', [App\Controllers\InventarioController::class, 'getArticulos']);
+
+// Rutas Planificación
+$router->get('/api/planificacion/presupuestos', [App\Controllers\PlanificacionController::class, 'getPresupuestos']);
 
 require_once __DIR__ . '/../routes/api.php';
 

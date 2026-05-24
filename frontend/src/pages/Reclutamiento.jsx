@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../services/api';
 import { 
   DndContext, 
   closestCenter,
@@ -19,12 +20,7 @@ import { CSS } from '@dnd-kit/utilities';
 import './Reclutamiento.css';
 import { Plus } from 'lucide-react';
 
-const initialCandidates = [
-  { id: '1', name: 'Laura Martínez', role: 'Frontend Dev', column: 'postulado' },
-  { id: '2', name: 'Pedro Sánchez', role: 'Backend Dev', column: 'postulado' },
-  { id: '3', name: 'Sofía Castro', role: 'UX Designer', column: 'entrevista' },
-  { id: '4', name: 'Miguel Torres', role: 'DevOps', column: 'ofertado' },
-];
+
 
 const COLUMNS = [
   { id: 'postulado', title: 'Postulados' },
@@ -58,8 +54,30 @@ const SortableItem = (props) => {
 };
 
 export const Reclutamiento = () => {
-  const [candidates, setCandidates] = useState(initialCandidates);
+  const [candidates, setCandidates] = useState([]);
   const [activeId, setActiveId] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCandidatos = async () => {
+      try {
+        const data = await apiFetch('/api/reclutamiento/candidatos');
+        // Map backend fields to frontend format
+        const formatted = data.map(c => ({
+          id: String(c.id),
+          name: c.nombre,
+          role: c.puesto,
+          column: c.estado
+        }));
+        setCandidates(formatted);
+      } catch (error) {
+        console.error('Error fetching candidatos:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCandidatos();
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -121,6 +139,7 @@ export const Reclutamiento = () => {
       </div>
 
       <div className="kanban-board">
+        {loading ? <p style={{padding: '20px'}}>Cargando candidatos...</p> : (
         <DndContext 
           sensors={sensors} 
           collisionDetection={closestCenter} 
@@ -158,6 +177,7 @@ export const Reclutamiento = () => {
             ) : null}
           </DragOverlay>
         </DndContext>
+        )}
       </div>
     </div>
   );

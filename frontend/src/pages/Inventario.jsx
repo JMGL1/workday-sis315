@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../services/api';
 
 export const Inventario = () => {
-  const [bienes, setBienes] = useState([
-    { id: 1, articulo: 'Laptop Dell XPS 15', stock: 5, minimo: 3, estado: 'Óptimo' },
-    { id: 2, articulo: 'Monitor LG 27"', stock: 2, minimo: 5, estado: 'Bajo Stock' },
-    { id: 3, articulo: 'Silla Ergonómica', stock: 12, minimo: 10, estado: 'Óptimo' },
-  ]);
+  const [bienes, setBienes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchArticulos = async () => {
+      try {
+        const data = await apiFetch('/api/inventario/articulos');
+        setBienes(data);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchArticulos();
+  }, []);
 
   const reorder = (id) => {
     setBienes(bienes.map(b => b.id === id ? { ...b, stock: b.stock + 10, estado: 'Óptimo' } : b));
@@ -22,6 +34,7 @@ export const Inventario = () => {
       </div>
 
       <div className="card">
+        {loading ? <p>Cargando inventario...</p> : (
         <table className="workday-table">
           <thead>
             <tr>
@@ -48,6 +61,7 @@ export const Inventario = () => {
             ))}
           </tbody>
         </table>
+        )}
       </div>
     </div>
   );

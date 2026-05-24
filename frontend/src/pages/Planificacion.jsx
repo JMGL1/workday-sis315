@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../services/api';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -20,27 +21,41 @@ ChartJS.register(
 );
 
 export const Planificacion = () => {
-  const [presupuestoQ1, setPresupuestoQ1] = useState(150000);
-  const [presupuestoQ2, setPresupuestoQ2] = useState(165000);
+  const [presupuestos, setPresupuestos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await apiFetch('/api/planificacion/presupuestos');
+        setPresupuestos(data);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const data = {
-    labels: ['Q1', 'Q2', 'Q3 (Proyectado)', 'Q4 (Proyectado)'],
+    labels: presupuestos.map(p => p.trimestre),
     datasets: [
       {
-        label: 'Presupuesto (Bs)',
-        data: [presupuestoQ1, presupuestoQ2, 180000, 200000],
-        backgroundColor: 'rgba(0, 90, 156, 0.7)',
+        label: 'Presupuesto Asignado (Bs)',
+        data: presupuestos.map(p => parseFloat(p.monto_asignado)),
+        backgroundColor: 'rgba(0, 90, 156, 0.8)',
       },
       {
         label: 'Gasto Real (Bs)',
-        data: [145000, 160000, null, null],
-        backgroundColor: 'rgba(46, 125, 50, 0.7)',
+        data: presupuestos.map(p => parseFloat(p.gasto_real)),
+        backgroundColor: 'rgba(46, 125, 50, 0.8)',
       }
     ],
   };
 
   const handleGuardar = () => {
-    alert('Planificación guardada exitosamente.');
+    alert('Planificación guardada (Simulado)');
   };
 
   return (
@@ -54,24 +69,24 @@ export const Planificacion = () => {
 
       <div className="card" style={{ marginBottom: '24px' }}>
         <h3 className="card-title">Proyección Trimestral</h3>
+        {loading ? <p>Cargando datos...</p> : (
         <div style={{ height: '300px' }}>
           <Bar data={data} options={{ maintainAspectRatio: false }} />
         </div>
+        )}
       </div>
 
       <div className="card">
         <h3 className="card-title">Ajuste de Presupuesto Activo</h3>
         <div style={{ display: 'flex', gap: '20px', marginTop: '16px' }}>
-          <div className="form-group">
-            <label>Presupuesto Q1 (Bs)</label>
-            <input type="number" value={presupuestoQ1} onChange={e => setPresupuestoQ1(Number(e.target.value))} />
-          </div>
-          <div className="form-group">
-            <label>Presupuesto Q2 (Bs)</label>
-            <input type="number" value={presupuestoQ2} onChange={e => setPresupuestoQ2(Number(e.target.value))} />
-          </div>
+          {presupuestos.slice(0, 2).map((p, idx) => (
+            <div className="form-group" key={idx}>
+              <label>Presupuesto {p.trimestre} (Bs)</label>
+              <input type="number" defaultValue={parseFloat(p.monto_asignado)} />
+            </div>
+          ))}
         </div>
-        <button className="btn btn-primary mt-3" onClick={handleGuardar}>Guardar Proyección</button>
+        <button className="btn btn-primary" style={{marginTop: '15px'}} onClick={handleGuardar}>Guardar Proyección</button>
       </div>
     </div>
   );

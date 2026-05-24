@@ -1,23 +1,30 @@
 :root {
-  /* Corporative Colors */
-  --color-primary: #005A9C;      /* Workday Blue */
-  --color-secondary: #00437A;    /* Darker Blue */
+  /* Corporative Colors - Premium */
+  --color-primary: #005A9C;      
+  --color-secondary: #003F7A;    
   --color-accent-blue: #0073E6;
-  --color-accent-green: #2E7D32; /* Success / Metrics */
-  --color-accent-red: #D32F2F;   /* Danger / Decrease */
-  --color-accent-orange: #F57C00; /* Warnings */
-  --color-accent-purple: #7B1FA2; /* Other metrics */
+  --color-accent-green: #2E7D32; 
+  --color-accent-red: #D32F2F;   
+  --color-accent-orange: #F57C00; 
+  --color-accent-purple: #7B1FA2; 
+  --color-gradient-primary: linear-gradient(135deg, #005A9C 0%, #0073E6 100%);
+  --color-gradient-success: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
 
   /* Neutrals */
-  --color-bg-main: #F4F6F8;      /* Main background (light gray) */
-  --color-bg-card: #FFFFFF;      /* White cards */
-  --color-text-main: #333333;    /* Main text */
-  --color-text-muted: #666666;   /* Subtitles */
-  --color-border: #E0E0E0;
+  --color-bg-main: #F4F7FB;      /* Softer background */
+  --color-bg-card: rgba(255, 255, 255, 0.95);
+  --color-text-main: #1F2937;    
+  --color-text-muted: #6B7280;   
+  --color-border: rgba(229, 231, 235, 0.8);
 
-  /* Layout */
+  /* Layout & FX */
   --sidebar-width: 260px;
   --header-height: 64px;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --radius-md: 12px;
+  --radius-lg: 16px;
   
   /* Typography */
   --font-family: 'Inter', 'Roboto', 'Segoe UI', sans-serif;
@@ -49,10 +56,17 @@ a {
 /* Base UI Components */
 .card {
   background: var(--color-bg-card);
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
   border: 1px solid var(--color-border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .card-title {
@@ -62,20 +76,74 @@ a {
 }
 
 .btn {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 24px;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
   border: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn-primary {
-  background-color: var(--color-primary);
+  background: var(--color-gradient-primary);
   color: white;
+  box-shadow: 0 4px 14px 0 rgba(0, 115, 230, 0.39);
 }
 
 .btn-primary:hover {
-  background-color: var(--color-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 115, 230, 0.23);
+  filter: brightness(1.05);
 }
+
+/* Data Tables Premium */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 15px;
+}
+
+table th {
+  text-align: left;
+  padding: 14px 16px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-main);
+  font-size: 0.95rem;
+}
+
+table tr {
+  transition: background-color 0.2s ease;
+}
+
+table tr:hover td {
+  background-color: rgba(0, 90, 156, 0.02);
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badge.success { background-color: rgba(46, 125, 50, 0.1); color: var(--color-accent-green); }
+.badge.warning { background-color: rgba(245, 124, 0, 0.1); color: var(--color-accent-orange); }
+.badge.danger { background-color: rgba(211, 47, 47, 0.1); color: var(--color-accent-red); }
+.badge.info { background-color: rgba(0, 115, 230, 0.1); color: var(--color-accent-blue); }

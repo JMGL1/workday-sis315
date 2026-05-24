@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../services/api';
 import './Talento.css';
 
 export const Talento = () => {
-  const [objetivos, setObjetivos] = useState([
-    { id: 1, titulo: 'Lanzar nuevo producto al mercado', departamento: 'Tecnología', progreso: 75, estado: 'En Progreso' },
-    { id: 2, titulo: 'Aumentar ventas un 20%', departamento: 'Ventas', progreso: 40, estado: 'En Riesgo' },
-    { id: 3, titulo: 'Reducir rotación de personal', departamento: 'Recursos Humanos', progreso: 100, estado: 'Completado' },
-    { id: 4, titulo: 'Campaña de marketing digital', departamento: 'Marketing', progreso: 10, estado: 'No Iniciado' },
-  ]);
+  const [objetivos, setObjetivos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchObjetivos = async () => {
+      try {
+        const data = await apiFetch('/api/talento/objetivos');
+        setObjetivos(data);
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchObjetivos();
+  }, []);
 
   return (
     <div className="talento-page">
@@ -20,6 +31,7 @@ export const Talento = () => {
 
       <div className="card">
         <h3 className="card-title">Objetivos por Departamento</h3>
+        {loading ? <p>Cargando objetivos...</p> : (
         <table className="workday-table">
           <thead>
             <tr>
@@ -52,6 +64,7 @@ export const Talento = () => {
             ))}
           </tbody>
         </table>
+        )}
       </div>
     </div>
   );
