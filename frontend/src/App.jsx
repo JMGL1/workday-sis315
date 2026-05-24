@@ -12,6 +12,7 @@ import { Asistencia } from './pages/Asistencia';
 import { Gastos } from './pages/Gastos';
 import { Inventario } from './pages/Inventario';
 import { Planificacion } from './pages/Planificacion';
+import { Configuracion } from './pages/Configuracion';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Protected Route Wrapper
@@ -47,7 +48,7 @@ function AppRoutes() {
         <Route path="inventario" element={<Inventario />} />
         <Route path="planificacion" element={<Planificacion />} />
         <Route path="reportes" element={<Navigate to="/" replace />} /> {/* Analytics covered in Dashboard */}
-        <Route path="configuracion" element={<div>Módulo Configuración (En desarrollo)</div>} />
+        <Route path="configuracion" element={<Configuracion />} />
       </Route>
     </Routes>
   );

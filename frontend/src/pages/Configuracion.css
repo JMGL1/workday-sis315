@@ -1,0 +1,66 @@
+.configuracion-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.config-container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+}
+
+.config-sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 0;
+}
+
+.config-tab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+}
+
+.config-tab:hover {
+  background: var(--color-bg-main);
+  color: var(--color-primary);
+}
+
+.config-tab.active {
+  background: rgba(0, 90, 156, 0.05);
+  color: var(--color-primary);
+  border-left-color: var(--color-primary);
+}
+
+.toggle-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.toggle-group label {
+  font-weight: 500;
+  color: var(--color-text-main);
+}
+
+.sistema-info p {
+  padding: 8px 0;
+  color: var(--color-text-muted);
+}
+
+.sistema-info strong {
+  color: var(--color-text-main);
+}
