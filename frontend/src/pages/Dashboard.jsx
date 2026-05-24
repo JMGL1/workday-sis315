@@ -63,7 +63,7 @@ export const Dashboard = () => {
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>Bienvenid{user?.name.endsWith('a') ? 'a' : 'o'}, {user?.name}</h1>
+        <h1>Bienvenid{user?.username?.endsWith('a') ? 'a' : 'o'}, {user?.username}</h1>
         <p>Resumen general de tu organización</p>
       </div>
       

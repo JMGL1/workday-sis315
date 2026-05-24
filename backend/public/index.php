@@ -38,26 +38,26 @@ use App\Core\Router;
 $router = new Router();
 
 // Rutas de Autenticación
-$router->post('/api/auth/login', [new App\Controllers\AuthController(), 'login']);
+$router->post('/api/auth/login', [App\Controllers\AuthController::class, 'login']);
 
 // Rutas HCM
-$router->get('/api/hcm/empleados', [new App\Controllers\HcmController(), 'getEmpleados']);
-$router->post('/api/hcm/empleados', [new App\Controllers\HcmController(), 'createEmpleado']);
+$router->get('/api/hcm/empleados', [App\Controllers\HcmController::class, 'getEmpleados']);
+$router->post('/api/hcm/empleados', [App\Controllers\HcmController::class, 'createEmpleado']);
 
 // Rutas Finanzas
-$router->get('/api/finanzas/transacciones', [new App\Controllers\FinanzasController(), 'getTransacciones']);
+$router->get('/api/finanzas/transacciones', [App\Controllers\FinanzasController::class, 'getTransacciones']);
 
 // Rutas Asistencia
-$router->get('/api/asistencia/marcas', [new App\Controllers\AsistenciaController(), 'getMarcas']);
-$router->post('/api/asistencia/fichar', [new App\Controllers\AsistenciaController(), 'fichar']);
+$router->get('/api/asistencia/marcas', [App\Controllers\AsistenciaController::class, 'getMarcas']);
+$router->post('/api/asistencia/fichar', [App\Controllers\AsistenciaController::class, 'fichar']);
 
 // Rutas Nómina
-$router->post('/api/payroll/calculate', [new App\Controllers\NominaController(), 'calculate']);
-$router->post('/api/payroll/approve', [new App\Controllers\NominaController(), 'approve']);
+$router->post('/api/payroll/calculate', [App\Controllers\NominaController::class, 'calculate']);
+$router->post('/api/payroll/approve', [App\Controllers\NominaController::class, 'approve']);
 
 // Rutas Gastos
-$router->get('/api/gastos/solicitudes', [new App\Controllers\GastosController(), 'getGastos']);
-$router->post('/api/gastos/solicitudes', [new App\Controllers\GastosController(), 'createGasto']);
+$router->get('/api/gastos/solicitudes', [App\Controllers\GastosController::class, 'getGastos']);
+$router->post('/api/gastos/solicitudes', [App\Controllers\GastosController::class, 'createGasto']);
 
 require_once __DIR__ . '/../routes/api.php';
 
