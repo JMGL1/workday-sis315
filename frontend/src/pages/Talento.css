@@ -1,0 +1,44 @@
+.progress-bar-container {
+  width: 100%;
+  background-color: var(--color-bg-main);
+  border-radius: 10px;
+  height: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.bg-success { background-color: var(--color-accent-green); }
+.bg-primary { background-color: var(--color-primary); }
+.bg-warning { background-color: var(--color-accent-orange); }
+
+.progress-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #333;
+  mix-blend-mode: difference;
+}
+
+.status-badge.en-progreso {
+  background-color: #E3F2FD;
+  color: #1976D2;
+}
+
+.status-badge.en-riesgo {
+  background-color: #FFF3E0;
+  color: #F57C00;
+}
+
+.status-badge.no-iniciado {
+  background-color: #F5F5F5;
+  color: #757575;
+}

@@ -1,0 +1,43 @@
+.finanzas-summary {
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-primary-light {
+  background: linear-gradient(135deg, rgba(0, 90, 156, 0.05) 0%, rgba(0, 90, 156, 0.1) 100%);
+  border-color: rgba(0, 90, 156, 0.2);
+}
+
+.summary-card h3 {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.summary-card h2 {
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.text-success { color: var(--color-accent-green); }
+.text-danger { color: var(--color-accent-red); }
+.font-bold { font-weight: 600; }
+
+.status-badge.pendiente {
+  background-color: #FFF3E0;
+  color: #E65100;
+}
+
+.status-badge.completado {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+}

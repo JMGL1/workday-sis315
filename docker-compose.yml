@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:80"
+    volumes:
+      - ./backend/database.sqlite:/var/www/html/database.sqlite
+      
+  # Worker simulado para procesamiento en segundo plano
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: php src/Core/Worker.php
+    depends_on:
+      - backend

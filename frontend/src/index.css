@@ -1,0 +1,81 @@
+:root {
+  /* Corporative Colors */
+  --color-primary: #005A9C;      /* Workday Blue */
+  --color-secondary: #00437A;    /* Darker Blue */
+  --color-accent-blue: #0073E6;
+  --color-accent-green: #2E7D32; /* Success / Metrics */
+  --color-accent-red: #D32F2F;   /* Danger / Decrease */
+  --color-accent-orange: #F57C00; /* Warnings */
+  --color-accent-purple: #7B1FA2; /* Other metrics */
+
+  /* Neutrals */
+  --color-bg-main: #F4F6F8;      /* Main background (light gray) */
+  --color-bg-card: #FFFFFF;      /* White cards */
+  --color-text-main: #333333;    /* Main text */
+  --color-text-muted: #666666;   /* Subtitles */
+  --color-border: #E0E0E0;
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --header-height: 64px;
+  
+  /* Typography */
+  --font-family: 'Inter', 'Roboto', 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg-main);
+  color: var(--color-text-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+/* Base UI Components */
+.card {
+  background: var(--color-bg-card);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+  border: 1px solid var(--color-border);
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-secondary);
+}
