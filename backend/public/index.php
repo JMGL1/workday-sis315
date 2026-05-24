@@ -26,10 +26,40 @@ spl_autoload_register(function ($class) {
     }
 });
 
+require_once __DIR__ . '/../src/Controllers/AuthController.php';
+require_once __DIR__ . '/../src/Controllers/HcmController.php';
+require_once __DIR__ . '/../src/Controllers/FinanzasController.php';
+require_once __DIR__ . '/../src/Controllers/AsistenciaController.php';
+require_once __DIR__ . '/../src/Controllers/NominaController.php';
+require_once __DIR__ . '/../src/Controllers/GastosController.php';
+
 use App\Core\Router;
 
 $router = new Router();
 
+// Rutas de Autenticación
+$router->post('/api/auth/login', [new App\Controllers\AuthController(), 'login']);
+
+// Rutas HCM
+$router->get('/api/hcm/empleados', [new App\Controllers\HcmController(), 'getEmpleados']);
+$router->post('/api/hcm/empleados', [new App\Controllers\HcmController(), 'createEmpleado']);
+
+// Rutas Finanzas
+$router->get('/api/finanzas/transacciones', [new App\Controllers\FinanzasController(), 'getTransacciones']);
+
+// Rutas Asistencia
+$router->get('/api/asistencia/marcas', [new App\Controllers\AsistenciaController(), 'getMarcas']);
+$router->post('/api/asistencia/fichar', [new App\Controllers\AsistenciaController(), 'fichar']);
+
+// Rutas Nómina
+$router->post('/api/payroll/calculate', [new App\Controllers\NominaController(), 'calculate']);
+$router->post('/api/payroll/approve', [new App\Controllers\NominaController(), 'approve']);
+
+// Rutas Gastos
+$router->get('/api/gastos/solicitudes', [new App\Controllers\GastosController(), 'getGastos']);
+$router->post('/api/gastos/solicitudes', [new App\Controllers\GastosController(), 'createGasto']);
+
 require_once __DIR__ . '/../routes/api.php';
 
 $router->dispatch();
+?>

@@ -3,17 +3,24 @@
 namespace App\Controllers;
 
 use App\Core\Response;
+use App\Core\AuthMiddleware;
+use App\Database\Database;
+use PDO;
 
 class FinanzasController
 {
-    public function index(): void
+    public function __construct()
     {
-        // Dummy data
-        $transacciones = [
-            ['id' => 1, 'fecha' => '2026-05-01', 'concepto' => 'Pago Nómina', 'categoria' => 'Salarios', 'tipo' => 'egreso', 'monto' => 50000.00, 'estado' => 'Completado'],
-            ['id' => 2, 'fecha' => '2026-05-15', 'concepto' => 'Venta de Servicios', 'categoria' => 'Ventas', 'tipo' => 'ingreso', 'monto' => 120000.00, 'estado' => 'Completado'],
-        ];
+        AuthMiddleware::handle();
+    }
 
-        Response::json(['status' => 'success', 'data' => $transacciones]);
+    public function getTransacciones(): void
+    {
+        $pdo = Database::getConnection();
+        // Get transactions ordered by date descending
+        $stmt = $pdo->query("SELECT * FROM transacciones ORDER BY fecha DESC, id DESC");
+        $transacciones = $stmt->fetchAll();
+        
+        Response::json($transacciones);
     }
 }

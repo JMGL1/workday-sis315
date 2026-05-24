@@ -1,97 +1,157 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Plus, MoreVertical } from 'lucide-react';
+import { apiFetch } from '../services/api';
 import './Hcm.css';
 
 export const Hcm = () => {
   const [empleados, setEmpleados] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [busqueda, setBusqueda] = useState('');
+  const [loading, setLoading] = useState(true);
+  
+  // Modal state
+  const [showModal, setShowModal] = useState(false);
+  const [nuevoEmpleado, setNuevoEmpleado] = useState({
+    nombre: '',
+    departamento: 'TI',
+    cargo: '',
+    salario_base: 0
+  });
+
+  const fetchEmpleados = async (search = '') => {
+    try {
+      setLoading(true);
+      const url = search ? `/api/hcm/empleados?search=${encodeURIComponent(search)}` : '/api/hcm/empleados';
+      const data = await apiFetch(url);
+      setEmpleados(data);
+    } catch (error) {
+      console.error('Error fetching empleados:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // In a real scenario, this would fetch from the PHP backend:
-    // fetch('http://localhost:8000/api/hcm/empleados').then(r => r.json())
-    const mockData = [
-      { id: 1, nombre: 'Juan Pérez', cargo: 'Desarrollador', departamento: 'Tecnología', fechaIngreso: '15/01/2024', estado: 'Activo' },
-      { id: 2, nombre: 'Ana López', cargo: 'Analista Financiero', departamento: 'Finanzas', fechaIngreso: '20/02/2024', estado: 'Activo' },
-      { id: 3, nombre: 'Carlos Gómez', cargo: 'Gerente de RRHH', departamento: 'Recursos Humanos', fechaIngreso: '10/03/2024', estado: 'Activo' },
-      { id: 4, nombre: 'Lucía Ramírez', cargo: 'Diseñadora UX', departamento: 'Marketing', fechaIngreso: '05/04/2024', estado: 'Activo' },
-    ];
-    setEmpleados(mockData);
+    fetchEmpleados();
   }, []);
 
-  const filteredEmpleados = empleados.filter(e => 
-    e.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    e.departamento.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchEmpleados(busqueda);
+  };
+
+  const handleCrearEmpleado = async (e) => {
+    e.preventDefault();
+    try {
+      await apiFetch('/api/hcm/empleados', {
+        method: 'POST',
+        body: JSON.stringify(nuevoEmpleado)
+      });
+      setShowModal(false);
+      setNuevoEmpleado({ nombre: '', departamento: 'TI', cargo: '', salario_base: 0 });
+      fetchEmpleados(); // Refresh list
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <div className="hcm-page">
       <div className="page-header">
         <div>
           <h1>Directorio de Empleados</h1>
-          <p>Gestiona el talento de tu organización</p>
+          <p>Gestión del capital humano de la organización</p>
         </div>
-        <button className="btn btn-primary flex-center gap-2">
-          <Plus size={18} /> Nuevo Empleado
+        <button className="btn btn-primary" onClick={() => setShowModal(true)}>
+          + Nuevo Empleado
         </button>
       </div>
 
+      <div className="card hcm-search">
+        <form onSubmit={handleSearch} className="search-form">
+          <input 
+            type="text" 
+            placeholder="Buscar por nombre, cargo o departamento..." 
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+          />
+          <button type="submit" className="btn btn-primary">Buscar</button>
+        </form>
+      </div>
+
       <div className="card">
-        <div className="table-toolbar">
-          <div className="search-container table-search">
-            <Search size={18} className="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Buscar por nombre o departamento..." 
-              className="search-input"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        {loading ? (
+          <p>Cargando empleados...</p>
+        ) : (
+          <div className="table-responsive">
+            <table className="workday-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Departamento</th>
+                  <th>Cargo</th>
+                  <th>Salario Base (Bs)</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {empleados.map(emp => (
+                  <tr key={emp.id}>
+                    <td>
+                      <div className="employee-cell">
+                        <div className="employee-avatar">{emp.nombre.charAt(0)}</div>
+                        <strong>{emp.nombre}</strong>
+                      </div>
+                    </td>
+                    <td>{emp.departamento}</td>
+                    <td>{emp.cargo}</td>
+                    <td>Bs {parseFloat(emp.salario_base).toLocaleString()}</td>
+                    <td>
+                      <span className={`status-badge ${emp.estado.toLowerCase()}`}>
+                        {emp.estado}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {showModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Registrar Nuevo Empleado</h2>
+            <form onSubmit={handleCrearEmpleado} className="nomina-form">
+              <div className="form-group">
+                <label>Nombre Completo</label>
+                <input type="text" value={nuevoEmpleado.nombre} onChange={e => setNuevoEmpleado({...nuevoEmpleado, nombre: e.target.value})} required />
+              </div>
+              <div className="form-group">
+                <label>Departamento</label>
+                <select value={nuevoEmpleado.departamento} onChange={e => setNuevoEmpleado({...nuevoEmpleado, departamento: e.target.value})}>
+                  <option value="TI">Tecnología (TI)</option>
+                  <option value="Finanzas">Finanzas</option>
+                  <option value="Recursos Humanos">Recursos Humanos</option>
+                  <option value="Ventas">Ventas</option>
+                  <option value="Marketing">Marketing</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Cargo</label>
+                <input type="text" value={nuevoEmpleado.cargo} onChange={e => setNuevoEmpleado({...nuevoEmpleado, cargo: e.target.value})} required />
+              </div>
+              <div className="form-group">
+                <label>Salario Base Mensual (Bs)</label>
+                <input type="number" value={nuevoEmpleado.salario_base} onChange={e => setNuevoEmpleado({...nuevoEmpleado, salario_base: e.target.value})} required />
+              </div>
+              <div className="modal-actions" style={{marginTop: '20px', display: 'flex', gap: '10px'}}>
+                <button type="submit" className="btn btn-primary">Guardar</button>
+                <button type="button" className="btn" onClick={() => setShowModal(false)}>Cancelar</button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <div className="table-responsive">
-          <table className="workday-table">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Cargo</th>
-                <th>Departamento</th>
-                <th>Fecha Ingreso</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredEmpleados.map(emp => (
-                <tr key={emp.id}>
-                  <td>
-                    <div className="user-cell">
-                      <div className="avatar-small">{emp.nombre.charAt(0)}</div>
-                      <span className="user-name">{emp.nombre}</span>
-                    </div>
-                  </td>
-                  <td>{emp.cargo}</td>
-                  <td>{emp.departamento}</td>
-                  <td>{emp.fechaIngreso}</td>
-                  <td>
-                    <span className={`status-badge ${emp.estado.toLowerCase()}`}>
-                      {emp.estado}
-                    </span>
-                  </td>
-                  <td>
-                    <button className="icon-btn"><MoreVertical size={16} /></button>
-                  </td>
-                </tr>
-              ))}
-              {filteredEmpleados.length === 0 && (
-                <tr>
-                  <td colSpan="6" className="text-center py-4">No se encontraron empleados.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

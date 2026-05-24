@@ -6,13 +6,26 @@ import './Login.css';
 export const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    login(username, password);
-    navigate('/');
+    setError('');
+    
+    // Validaciones básicas
+    if (!username || !password) {
+      setError('Por favor complete todos los campos');
+      return;
+    }
+
+    const result = await login(username, password);
+    if (result.success) {
+      navigate('/');
+    } else {
+      setError(result.error || 'Credenciales incorrectas');
+    }
   };
 
   return (
@@ -22,6 +35,7 @@ export const Login = () => {
         <p className="login-subtitle">Inicia sesión en tu cuenta</p>
         
         <form onSubmit={handleSubmit} className="login-form">
+          {error && <p className="error-message">{error}</p>}
           <div className="form-group">
             <label>Usuario / Rol simulado (ej: admin, rrhh)</label>
             <input 

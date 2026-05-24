@@ -1,91 +1,35 @@
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.hcm-search {
   margin-bottom: 24px;
 }
 
-.page-header h1 {
-  font-size: 1.5rem;
-  margin-bottom: 4px;
-}
-
-.page-header p {
-  color: var(--color-text-muted);
-  font-size: 0.95rem;
-}
-
-.flex-center {
+.search-form {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  gap: 16px;
 }
 
-.gap-2 { gap: 8px; }
-
-.table-toolbar {
-  margin-bottom: 20px;
+.search-form input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
-.table-search {
-  width: 100%;
-  max-width: 400px;
-  background-color: var(--color-bg-main);
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
-.workday-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.workday-table th {
-  padding: 12px 16px;
-  color: var(--color-text-muted);
-  font-weight: 600;
-  font-size: 0.85rem;
-  border-bottom: 2px solid var(--color-border);
-  background-color: var(--color-bg-main);
-}
-
-.workday-table td {
-  padding: 16px;
-  border-bottom: 1px solid var(--color-border);
-  vertical-align: middle;
-  font-size: 0.9rem;
-}
-
-.workday-table tbody tr:hover {
-  background-color: rgba(0,0,0,0.02);
-}
-
-.user-cell {
+.employee-cell {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.avatar-small {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+.employee-avatar {
+  width: 36px;
+  height: 36px;
   background-color: var(--color-primary);
   color: white;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.75rem;
   font-weight: 600;
 }
 
@@ -99,5 +43,31 @@
   color: #C62828;
 }
 
-.text-center { text-align: center; }
-.py-4 { padding-top: 16px; padding-bottom: 16px; }
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--color-text-main);
+}

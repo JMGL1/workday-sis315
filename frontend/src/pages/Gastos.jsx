@@ -1,26 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { apiFetch } from '../services/api';
 import './Gastos.css';
 
 export const Gastos = () => {
-  const [gastos, setGastos] = useState([
-    { id: 1, fecha: '2026-05-10', descripcion: 'Vuelo a Conferencia', monto: 350.00, estado: 'Aprobado' },
-    { id: 2, fecha: '2026-05-12', descripcion: 'Hotel 2 Noches', monto: 200.00, estado: 'Pendiente' },
-  ]);
+  const [gastos, setGastos] = useState([]);
   const [descripcion, setDescripcion] = useState('');
   const [monto, setMonto] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const submitGasto = (e) => {
+  const fetchGastos = async () => {
+    try {
+      const data = await apiFetch('/api/gastos/solicitudes');
+      setGastos(data);
+    } catch (error) {
+      console.error('Error fetching gastos:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchGastos();
+  }, []);
+
+  const submitGasto = async (e) => {
     e.preventDefault();
-    const nuevoGasto = {
-      id: Date.now(),
-      fecha: new Date().toISOString().split('T')[0],
-      descripcion,
-      monto: parseFloat(monto),
-      estado: 'Pendiente'
-    };
-    setGastos([nuevoGasto, ...gastos]);
-    setDescripcion('');
-    setMonto('');
+    try {
+      await apiFetch('/api/gastos/solicitudes', {
+        method: 'POST',
+        body: JSON.stringify({ descripcion, monto: parseFloat(monto) })
+      });
+      setDescripcion('');
+      setMonto('');
+      fetchGastos(); // Refresh list
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -50,26 +65,35 @@ export const Gastos = () => {
 
         <div className="card">
           <h3 className="card-title">Mis Solicitudes Recientes</h3>
-          <table className="workday-table">
-            <thead>
-              <tr>
-                <th>Fecha</th>
-                <th>Descripción</th>
-                <th>Monto</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {gastos.map(g => (
-                <tr key={g.id}>
-                  <td>{g.fecha}</td>
-                  <td>{g.descripcion}</td>
-                  <td>Bs {g.monto.toLocaleString()}</td>
-                  <td><span className={`status-badge ${g.estado.toLowerCase()}`}>{g.estado}</span></td>
+          {loading ? (
+            <p>Cargando solicitudes...</p>
+          ) : (
+            <table className="workday-table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Descripción</th>
+                  <th>Monto</th>
+                  <th>Estado</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {gastos.map(g => (
+                  <tr key={g.id}>
+                    <td>{g.fecha}</td>
+                    <td>{g.descripcion}</td>
+                    <td>Bs {parseFloat(g.monto).toLocaleString()}</td>
+                    <td><span className={`status-badge ${g.estado.toLowerCase()}`}>{g.estado}</span></td>
+                  </tr>
+                ))}
+                {gastos.length === 0 && (
+                  <tr>
+                    <td colSpan="4" className="text-center py-4">No tienes solicitudes registradas.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

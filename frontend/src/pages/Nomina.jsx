@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { apiFetch } from '../services/api';
 import './Nomina.css';
 
 export const Nomina = () => {
@@ -7,19 +8,39 @@ export const Nomina = () => {
   const [deducciones, setDeducciones] = useState(15);
   const [resultado, setResultado] = useState(null);
 
-  const calcularNomina = (e) => {
+  const calcularNomina = async (e) => {
     e.preventDefault();
-    // Simulate POST /api/payroll/calculate
-    const bruto = horas * tarifa;
-    const desc = bruto * (deducciones / 100);
-    const neto = bruto - desc;
-    setResultado({ bruto, neto, desc });
+    try {
+      const data = await apiFetch('/api/payroll/calculate', {
+        method: 'POST',
+        body: JSON.stringify({ horas, tarifa, deducciones })
+      });
+      setResultado(data);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
-  const aprobarNomina = () => {
-    // Simulate POST /api/payroll/approve
-    alert('Nómina aprobada y registrada en Finanzas exitosamente.');
-    setResultado(null);
+  const aprobarNomina = async () => {
+    try {
+      await apiFetch('/api/payroll/approve', {
+        method: 'POST',
+        body: JSON.stringify({
+          horas,
+          tarifa,
+          bruto: resultado.bruto,
+          desc: resultado.desc,
+          neto: resultado.neto
+        })
+      });
+      alert('Nómina aprobada y registrada en Finanzas exitosamente.');
+      setResultado(null);
+      setHoras(160);
+      setTarifa(50);
+      setDeducciones(15);
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   return (
