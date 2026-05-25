@@ -58,12 +58,12 @@ class Database
 
     private static function initSchema(PDO $pdo, bool $isSqlite = false, bool $isPostgres = false): void
     {
-        $autoInc = $isSqlite ? 'AUTOINCREMENT' : ($isPostgres ? 'SERIAL' : 'AUTO_INCREMENT');
+        $pkType = $isSqlite ? 'INTEGER PRIMARY KEY AUTOINCREMENT' : ($isPostgres ? 'SERIAL PRIMARY KEY' : 'INT AUTO_INCREMENT PRIMARY KEY');
         // Initialize basic tables if they don't exist
             // 1. Usuarios (Login/Auth)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS users (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     username VARCHAR(50) NOT NULL UNIQUE,
                     password VARCHAR(255) NOT NULL,
                     role VARCHAR(50) DEFAULT 'employee',
@@ -74,7 +74,7 @@ class Database
             // 2. Empleados (HCM)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS empleados (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     nombre VARCHAR(100) NOT NULL,
                     departamento VARCHAR(100) NOT NULL,
                     cargo VARCHAR(100) NOT NULL,
@@ -86,7 +86,7 @@ class Database
             // 3. Candidatos (Reclutamiento)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS candidatos (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     nombre VARCHAR(100) NOT NULL,
                     puesto VARCHAR(100) NOT NULL,
                     estado VARCHAR(50) DEFAULT 'postulado',
@@ -97,7 +97,7 @@ class Database
             // 4. Transacciones (Finanzas)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS transacciones (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     fecha DATE NOT NULL,
                     concepto VARCHAR(255) NOT NULL,
                     categoria VARCHAR(100) NOT NULL,
@@ -110,7 +110,7 @@ class Database
             // 5. Nómina Historial (Nomina)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS nomina (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     empleado_id INT NULL,
                     fecha DATE NOT NULL,
                     horas DECIMAL(5,2) NOT NULL,
@@ -124,7 +124,7 @@ class Database
             // 6. Asistencia
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS asistencia (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     empleado_id INT NULL,
                     tipo VARCHAR(50) NOT NULL,
                     fecha DATE NOT NULL,
@@ -135,7 +135,7 @@ class Database
             // 7. Gastos
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS gastos (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     empleado_id INT NULL,
                     fecha DATE NOT NULL,
                     descripcion VARCHAR(255) NOT NULL,
@@ -147,7 +147,7 @@ class Database
             // 8. Inventario
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS inventario (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     articulo VARCHAR(150) NOT NULL,
                     stock INT DEFAULT 0,
                     minimo INT DEFAULT 0,
@@ -158,7 +158,7 @@ class Database
             // 9. Objetivos (Gestión de Talento)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS talento_objetivos (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     titulo VARCHAR(255) NOT NULL,
                     departamento VARCHAR(100) NOT NULL,
                     progreso INT DEFAULT 0,
@@ -169,7 +169,7 @@ class Database
             // 10. Presupuestos (Planificación Adaptativa)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS presupuestos (
-                    id $autoInc PRIMARY KEY,
+                    id $pkType,
                     trimestre VARCHAR(10) NOT NULL,
                     monto_asignado DECIMAL(15,2) NOT NULL,
                     gasto_real DECIMAL(15,2) DEFAULT 0.00
