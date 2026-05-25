@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { apiFetch } from '../services/api';
+import { apiFetch, API_URL } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (username, password) => {
     try {
-      const response = await fetch('http://localhost/DesarrolloWebCMD/proyecto_final/backend/public/api/auth/login', {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
