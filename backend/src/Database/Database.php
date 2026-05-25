@@ -14,9 +14,22 @@ class Database
         if (self::$instance === null) {
             try {
                 $isRender = getenv('RENDER') !== false;
+                $dbUrl = getenv('DATABASE_URL');
+                $isPostgres = false;
 
-                if ($isRender) {
-                    // Render environment (Use SQLite)
+                if ($dbUrl) {
+                    // Render PostgreSQL
+                    $db = parse_url($dbUrl);
+                    $host = $db['host'];
+                    $port = $db['port'] ?? 5432;
+                    $user = $db['user'];
+                    $pass = $db['pass'];
+                    $dbName = ltrim($db['path'], '/');
+                    $dsn = "pgsql:host=$host;port=$port;dbname=$dbName";
+                    self::$instance = new PDO($dsn, $user, $pass);
+                    $isPostgres = true;
+                } elseif ($isRender) {
+                    // Fallback to SQLite on Render if no Postgres URL
                     $dbFile = '/var/www/database.sqlite';
                     $dsn = "sqlite:$dbFile";
                     self::$instance = new PDO($dsn);
@@ -35,7 +48,7 @@ class Database
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 self::$instance->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
                 
-                self::initSchema(self::$instance, $isRender);
+                self::initSchema(self::$instance, $isRender && !$isPostgres, $isPostgres);
             } catch (PDOException $e) {
                 die("Connection failed: " . $e->getMessage());
             }
@@ -43,14 +56,14 @@ class Database
         return self::$instance;
     }
 
-    private static function initSchema(PDO $pdo, bool $isSqlite = false): void
+    private static function initSchema(PDO $pdo, bool $isSqlite = false, bool $isPostgres = false): void
     {
-        $autoInc = $isSqlite ? 'AUTOINCREMENT' : 'AUTO_INCREMENT';
+        $autoInc = $isSqlite ? 'AUTOINCREMENT' : ($isPostgres ? 'SERIAL' : 'AUTO_INCREMENT');
         // Initialize basic tables if they don't exist
             // 1. Usuarios (Login/Auth)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS users (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     username VARCHAR(50) NOT NULL UNIQUE,
                     password VARCHAR(255) NOT NULL,
                     role VARCHAR(50) DEFAULT 'employee',
@@ -61,7 +74,7 @@ class Database
             // 2. Empleados (HCM)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS empleados (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     nombre VARCHAR(100) NOT NULL,
                     departamento VARCHAR(100) NOT NULL,
                     cargo VARCHAR(100) NOT NULL,
@@ -73,7 +86,7 @@ class Database
             // 3. Candidatos (Reclutamiento)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS candidatos (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     nombre VARCHAR(100) NOT NULL,
                     puesto VARCHAR(100) NOT NULL,
                     estado VARCHAR(50) DEFAULT 'postulado',
@@ -84,7 +97,7 @@ class Database
             // 4. Transacciones (Finanzas)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS transacciones (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     fecha DATE NOT NULL,
                     concepto VARCHAR(255) NOT NULL,
                     categoria VARCHAR(100) NOT NULL,
@@ -97,7 +110,7 @@ class Database
             // 5. Nómina Historial (Nomina)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS nomina (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     empleado_id INT NULL,
                     fecha DATE NOT NULL,
                     horas DECIMAL(5,2) NOT NULL,
@@ -111,7 +124,7 @@ class Database
             // 6. Asistencia
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS asistencia (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     empleado_id INT NULL,
                     tipo VARCHAR(50) NOT NULL,
                     fecha DATE NOT NULL,
@@ -122,7 +135,7 @@ class Database
             // 7. Gastos
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS gastos (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     empleado_id INT NULL,
                     fecha DATE NOT NULL,
                     descripcion VARCHAR(255) NOT NULL,
@@ -134,7 +147,7 @@ class Database
             // 8. Inventario
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS inventario (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     articulo VARCHAR(150) NOT NULL,
                     stock INT DEFAULT 0,
                     minimo INT DEFAULT 0,
@@ -145,7 +158,7 @@ class Database
             // 9. Objetivos (Gestión de Talento)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS talento_objetivos (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     titulo VARCHAR(255) NOT NULL,
                     departamento VARCHAR(100) NOT NULL,
                     progreso INT DEFAULT 0,
@@ -156,7 +169,7 @@ class Database
             // 10. Presupuestos (Planificación Adaptativa)
             $pdo->exec("
                 CREATE TABLE IF NOT EXISTS presupuestos (
-                    id INTEGER PRIMARY KEY $autoInc,
+                    id $autoInc PRIMARY KEY,
                     trimestre VARCHAR(10) NOT NULL,
                     monto_asignado DECIMAL(15,2) NOT NULL,
                     gasto_real DECIMAL(15,2) DEFAULT 0.00

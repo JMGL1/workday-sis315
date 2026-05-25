@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.PROD ? '' : 'http://localhost/DesarrolloWebCMD/proyecto_final/backend/public';
+const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost/DesarrolloWebCMD/proyecto_final/backend/public');
 
 // Helper for making authenticated requests
 export const apiFetch = async (endpoint, options = {}) => {
