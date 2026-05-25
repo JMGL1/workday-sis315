@@ -46,7 +46,7 @@ RewriteRule ^ index.html [QSA,L]\n\
 
 # Ensure database directory is writable for SQLite
 RUN mkdir -p /var/www/database \
-    && touch /var/www/database.sqlite \
+    && touch /var/www/database/database.sqlite \
     && chown -R www-data:www-data /var/www/html /var/www/database \
     && chmod -R 775 /var/www/html /var/www/database
 

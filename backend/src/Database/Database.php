@@ -30,7 +30,7 @@ class Database
                     $isPostgres = true;
                 } elseif ($isRender) {
                     // Fallback to SQLite on Render if no Postgres URL
-                    $dbFile = '/var/www/database.sqlite';
+                    $dbFile = '/var/www/database/database.sqlite';
                     $dsn = "sqlite:$dbFile";
                     self::$instance = new PDO($dsn);
                 } else {
